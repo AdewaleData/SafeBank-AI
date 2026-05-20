@@ -1,11 +1,13 @@
 import logging
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from app.init_db import init_db
 from app.routers import admin, analytics, auth, dashboard, fraud, freeze, offline, settings, transactions
 
 logging.basicConfig(
@@ -35,10 +37,18 @@ def _cors_origins() -> list[str]:
 
 CORS_ORIGINS = _cors_origins()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+
 app = FastAPI(
     title="SafeBank AI API",
     description="Intelligent banking API with fraud detection",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
