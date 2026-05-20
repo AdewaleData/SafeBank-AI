@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: safebank-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: safebank
+      POSTGRES_PASSWORD: safebank_dev
+      POSTGRES_DB: safebank_ai
+    volumes:
+      - safebank_pg_data:/var/lib/postgresql/data
+
+volumes:
+  safebank_pg_data:

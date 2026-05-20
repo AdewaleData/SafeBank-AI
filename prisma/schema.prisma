@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  fullname        String
+  email           String   @unique
+  phone           String?
+  password        String
+  transactionPin  String?  @map("transaction_pin")
+  balance         Decimal  @default(0) @db.Decimal(18, 2)
+  accountNumber   String   @unique @map("account_number")
+  role            Role     @default(USER)
+  isFrozen        Boolean  @default(false) @map("is_frozen")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  sentTransactions     Transaction[] @relation("SenderTransactions")
+  receivedTransactions Transaction[] @relation("ReceiverTransactions")
+  fraudAlerts          FraudAlert[]
+  analytics            Analytics[]
+  emergencyFreeze      EmergencyFreeze?
+  offlineQueue         OfflineQueue[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  senderId    String            @map("sender_id")
+  receiverId  String?           @map("receiver_id")
+  amount      Decimal           @db.Decimal(18, 2)
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  reference   String            @unique
+  description String?
+  category    String?
+  createdAt   DateTime          @default(now()) @map("created_at")
+
+  sender   User  @relation("SenderTransactions", fields: [senderId], references: [id])
+  receiver User? @relation("ReceiverTransactions", fields: [receiverId], references: [id])
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  TRANSFER
+  DEPOSIT
+  WITHDRAWAL
+  BILL_PAYMENT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  FLAGGED
+}
+
+model FraudAlert {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  riskLevel RiskLevel @map("risk_level")
+  reason    String
+  resolved  Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("fraud_alerts")
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Analytics {
+  id       String   @id @default(cuid())
+  userId   String   @map("user_id")
+  category String
+  amount   Decimal  @db.Decimal(18, 2)
+  month    String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, month])
+  @@map("analytics")
+}
+
+model EmergencyFreeze {
+  id        String    @id @default(cuid())
+  userId    String    @unique @map("user_id")
+  frozen    Boolean   @default(false)
+  frozenAt  DateTime? @map("frozen_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("emergency_freeze")
+}
+
+model OfflineQueue {
+  id                  String     @id @default(cuid())
+  userId              String     @map("user_id")
+  transactionPayload  Json       @map("transaction_payload")
+  syncStatus          SyncStatus @default(PENDING) @map("sync_status")
+  createdAt           DateTime   @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("offline_queue")
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCED
+  FAILED
+}
