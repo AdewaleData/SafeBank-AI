@@ -1,4 +1,5 @@
 import logging
+import os
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,12 +13,26 @@ logging.basicConfig(
 )
 logger = logging.getLogger("safebank")
 
-CORS_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
-]
+
+def _cors_origins() -> list[str]:
+    origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+    ]
+    frontend = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
+    if frontend:
+        origins.append(frontend)
+    extra = os.getenv("CORS_ORIGINS", "")
+    for origin in extra.split(","):
+        o = origin.strip().rstrip("/")
+        if o and o not in origins:
+            origins.append(o)
+    return origins
+
+
+CORS_ORIGINS = _cors_origins()
 
 app = FastAPI(
     title="SafeBank AI API",

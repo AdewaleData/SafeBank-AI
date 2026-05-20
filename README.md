@@ -214,6 +214,29 @@ With the backend running, interactive docs are available at:
 
 ---
 
+## Deploy backend on Railway
+
+1. Create a new Railway service from this repo.
+2. **Settings → Root Directory** → set to **`backend`** (required).
+3. Railway uses **Railpack** — `backend/railpack.json` starts the API with:
+   `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Add a **PostgreSQL** plugin (or your own Postgres URL).
+5. **Variables** on the Railway service:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | Postgres URL from Railway (`postgresql://...`) |
+| `JWT_SECRET` | Long random secret |
+| `FRONTEND_URL` | Your Vercel app URL, e.g. `https://safebank-ai.vercel.app` |
+| `PORT` | Set automatically by Railway — do not override |
+
+6. Redeploy. Open `https://<your-service>.up.railway.app/health` — should return `{"status":"ok"}`.
+7. On **Vercel**, set `NEXT_PUBLIC_API_URL` to that same Railway URL (no trailing slash).
+
+If Railpack still says *No start command*, confirm **Root Directory is `backend`**, not the repo root.
+
+---
+
 ## Security notes
 
 - Never commit `.env`, `backend/.env`, or `frontend/.env.local`.
