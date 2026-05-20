@@ -12,11 +12,6 @@
     "dev:api": "cd backend && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
     "dev": "concurrently \"pnpm dev:api\" \"pnpm dev:web\""
   },
-  "dependencies": {
-    "next": "15.5.18",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
-  },
   "devDependencies": {
     "@prisma/client": "^6.8.2",
     "@types/bcryptjs": "^2.4.6",
