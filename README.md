@@ -199,15 +199,22 @@ With the backend running, interactive docs are available at:
 
 ## Deploy frontend on Vercel
 
-Vercel must build from the **`frontend`** folder (that is where `next` is listed in `package.json`).
+**Option A (recommended):** Root Directory = `frontend`
 
-1. Import the repo at [vercel.com](https://vercel.com).
-2. **Project Settings → General → Root Directory** → set to **`frontend`** → Save.
-3. **Environment variables** (Production & Preview):
-   - `NEXT_PUBLIC_API_URL` = your live API URL (e.g. `https://your-api.example.com`)
+1. **Project Settings → General → Root Directory** → **`frontend`** → Save.
+2. Clear any custom Install/Build commands (use defaults).
+3. Add env var `NEXT_PUBLIC_API_URL` = your live API URL.
 4. Redeploy.
 
-If Root Directory stays at the repo root, Vercel only sees the root `package.json` (Prisma/scripts) and reports *“No Next.js version detected”*.
+**Option B:** Root Directory = `.` (repo root)
+
+The repo includes a root `vercel.json` that installs and builds inside `frontend/`. Leave Root Directory empty or `.` and redeploy.
+
+**Environment variables** (required for both options):
+
+| Variable | Example |
+|----------|---------|
+| `NEXT_PUBLIC_API_URL` | `https://your-api.railway.app` |
 
 ---
 
