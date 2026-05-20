@@ -28,9 +28,16 @@ export default function RegisterPage() {
     setLoading(true);
     console.log("[SafeBank] Register submitted");
     try {
+      const payload = {
+        fullname: form.fullname.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        transaction_pin: form.transaction_pin,
+        ...(form.phone.trim() ? { phone: form.phone.trim() } : {}),
+      };
       const res = await api<{ access_token: string; user: Parameters<typeof saveSession>[1] }>(
         "/auth/register",
-        { method: "POST", body: JSON.stringify(form) }
+        { method: "POST", body: JSON.stringify(payload) }
       );
       saveSession(res.access_token, res.user);
       toast.success(

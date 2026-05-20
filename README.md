@@ -231,7 +231,19 @@ With the backend running, interactive docs are available at:
 | `PORT` | Set automatically by Railway — do not override |
 
 6. Redeploy. Open `https://<your-service>.up.railway.app/health` — should return `{"status":"ok"}`.
-7. On **Vercel**, set `NEXT_PUBLIC_API_URL` to that same Railway URL (no trailing slash).
+7. **Create database tables** (required once). From your PC, in the repo root:
+
+```bash
+# Use the Postgres URL from Railway (Variables → DATABASE_URL). Prisma uses postgresql:// not +asyncpg
+set DATABASE_URL=postgresql://USER:PASS@HOST:PORT/railway
+npx prisma db push
+```
+
+Then check: `https://<your-service>.up.railway.app/health/db` → should show `"database": "connected"`.
+
+Without this step, register/login return **500** because tables do not exist yet.
+
+8. On **Vercel**, set `NEXT_PUBLIC_API_URL` to your Railway URL (no trailing slash), and `FRONTEND_URL` on Railway to your Vercel URL.
 
 If Railpack still says *No start command*, confirm **Root Directory is `backend`**, not the repo root.
 

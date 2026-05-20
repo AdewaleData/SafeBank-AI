@@ -2,6 +2,7 @@ import logging
 import os
 
 from fastapi import FastAPI, HTTPException, Request
+from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -95,3 +96,19 @@ app.include_router(admin.router)
 async def health():
     logger.info("Health check")
     return {"status": "ok", "service": "SafeBank AI API"}
+
+
+@app.get("/health/db")
+async def health_db():
+    from app.database import engine
+
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected"}
+    except Exception as exc:
+        logger.exception("Database health check failed")
+        return JSONResponse(
+            status_code=503,
+            content={"status": "error", "database": str(exc)},
+        )
