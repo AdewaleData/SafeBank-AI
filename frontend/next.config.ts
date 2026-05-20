@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
 import path from "path";
 
+// Monorepo tracing only when building from repo root locally; skip on Vercel (root = frontend).
 const monorepoRoot = path.join(__dirname, "..");
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: monorepoRoot,
+  ...(process.env.VERCEL
+    ? {}
+    : { outputFileTracingRoot: monorepoRoot }),
   webpack: (config, { dev }) => {
     if (dev) {
       config.cache = false;

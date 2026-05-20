@@ -197,6 +197,20 @@ With the backend running, interactive docs are available at:
 
 ---
 
+## Deploy frontend on Vercel
+
+Vercel must build from the **`frontend`** folder (that is where `next` is listed in `package.json`).
+
+1. Import the repo at [vercel.com](https://vercel.com).
+2. **Project Settings → General → Root Directory** → set to **`frontend`** → Save.
+3. **Environment variables** (Production & Preview):
+   - `NEXT_PUBLIC_API_URL` = your live API URL (e.g. `https://your-api.example.com`)
+4. Redeploy.
+
+If Root Directory stays at the repo root, Vercel only sees the root `package.json` (Prisma/scripts) and reports *“No Next.js version detected”*.
+
+---
+
 ## Security notes
 
 - Never commit `.env`, `backend/.env`, or `frontend/.env.local`.
