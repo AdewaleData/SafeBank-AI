@@ -67,7 +67,7 @@ export default function AnalyticsPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(v: number) => formatCurrency(v)}
+                    formatter={(v) => formatCurrency(Number(v ?? 0))}
                     contentStyle={{
                       background: "#121A2F",
                       border: "1px solid rgba(255,255,255,0.1)",
@@ -99,7 +99,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
                 <YAxis stroke="#64748b" fontSize={12} tickFormatter={(v) => `₦${v / 1000}k`} />
                 <Tooltip
-                  formatter={(v: number) => formatCurrency(v)}
+                  formatter={(v) => formatCurrency(Number(v ?? 0))}
                   contentStyle={{
                     background: "#121A2F",
                     border: "1px solid rgba(255,255,255,0.1)",
