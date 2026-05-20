@@ -29,7 +29,14 @@ export default function SettingsPage() {
     api<{ fullname: string; email: string; phone: string | null; account_number: string }>(
       "/settings/profile"
     )
-      .then(setProfile)
+      .then((data) =>
+        setProfile({
+          fullname: data.fullname,
+          email: data.email,
+          phone: data.phone ?? "",
+          account_number: data.account_number,
+        })
+      )
       .catch(console.error);
   }, []);
 
