@@ -200,8 +200,11 @@ With the backend running, interactive docs are available at:
 ## Deploy frontend on Vercel
 
 1. **Project Settings → General → Root Directory** → **`frontend`** → Save.
-2. **Build & Development** — leave Install Command and Build Command **empty** (defaults: `pnpm install` and `pnpm build`).
-3. Do **not** add a custom command like `cd frontend && ...` — Vercel already runs inside `frontend/` when Root Directory is set.
+2. **Build & Development Settings** — open **Install Command** and **Build Command**:
+   - If you see `cd frontend && pnpm install`, **delete it** and leave the field **empty**, or use only `pnpm install`.
+   - Same for Build Command: **empty** or only `pnpm build`.
+   - Vercel already runs inside `frontend/` — `cd frontend` causes *No such file or directory*.
+3. Save, then redeploy.
 4. **Environment variables** → `NEXT_PUBLIC_API_URL` = your live API URL (not `localhost`).
 5. **Redeploy**.
 
