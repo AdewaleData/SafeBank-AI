@@ -199,18 +199,11 @@ With the backend running, interactive docs are available at:
 
 ## Deploy frontend on Vercel
 
-**Option A (recommended):** Root Directory = `frontend`
-
 1. **Project Settings → General → Root Directory** → **`frontend`** → Save.
-2. Clear any custom Install/Build commands (use defaults).
-3. Add env var `NEXT_PUBLIC_API_URL` = your live API URL.
-4. Redeploy.
-
-**Option B:** Root Directory = `.` (repo root)
-
-The repo includes a root `vercel.json` that installs and builds inside `frontend/`. Leave Root Directory empty or `.` and redeploy.
-
-**Environment variables** (required for both options):
+2. **Build & Development** — leave Install Command and Build Command **empty** (defaults: `pnpm install` and `pnpm build`).
+3. Do **not** add a custom command like `cd frontend && ...` — Vercel already runs inside `frontend/` when Root Directory is set.
+4. **Environment variables** → `NEXT_PUBLIC_API_URL` = your live API URL (not `localhost`).
+5. **Redeploy**.
 
 | Variable | Example |
 |----------|---------|
