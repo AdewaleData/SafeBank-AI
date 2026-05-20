@@ -10,7 +10,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "tsx scripts/reset-db.ts",
     "dev:api": "cd backend && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
-    "dev": "concurrently \"pnpm dev:api\" \"pnpm dev:web\""
+    "dev": "concurrently \"pnpm dev:api\" \"pnpm dev:web\"",
+    "start": "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"
   },
   "devDependencies": {
     "@prisma/client": "^6.8.2",
